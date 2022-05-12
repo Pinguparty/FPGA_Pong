@@ -4,3 +4,5 @@ Implementierung von Pong auf einem FPGA (Nexys 4) mit Unterstützung für Steuer
 ----------------------------------------------------------------------------------------------------------------
 All links about fpga project :
 - https://digilent.com/reference/learn/programmable-logic/tutorials/nexys-4-vga-test-pattern-with-mouse-overlay/start
+
+- Clock Tutorial https://learn.gadgetfactory.net/2017/02/22/fpga-clocking-clocking-wizard-in-xilinx-ise/
