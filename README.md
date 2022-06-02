@@ -35,3 +35,13 @@ Other Tutorials :
 
 GIT : 
 - https://github.com/barbedo/vivado-git
+
+-- Änderung Pushen --
+git add VGA_Controller.srcs/
+git add VGA_Controller.ip_user_files/
+git commit -m ""
+git push
+
+-- Änderung Pullen --
+git pull
+vivado ohne projekt öffnen und tcl ausführen (tools -> run tcl Script)
