@@ -39,7 +39,9 @@ architecture Behavioral of vga_test_tb is
     signal clk100Mhz : std_logic := '0';
     signal nreset    : std_logic := '0'; -- Negative reset
     
-    signal RGB_Val       : STD_LOGIC_VECTOR(11 downto 0) := "000000000000";
+    signal VGA_RED_VAL : STD_LOGIC_VECTOR (3 downto 0);
+    signal VGA_BLUE_VAL : STD_LOGIC_VECTOR (3 downto 0);
+    signal VGA_GREEN_VAL : STD_LOGIC_VECTOR (3 downto 0);
     signal HSync_Val     : std_logic := '0';
     signal VSync_Val     : std_logic := '0';
     signal ledValues     : std_logic_vector(4 downto 0);
@@ -50,11 +52,12 @@ architecture Behavioral of vga_test_tb is
 begin
 
     uut : entity work.VGA_test(Behavioral)
-        port map (RGB => RGB_Val,
-                  HSync => HSync_Val,
-                  VSync => VSync_Val,
+        port map (VGA_HS_O => HSync_Val,
+                  VGA_VS_O => VSync_Val,
+                  VGA_RED_O => VGA_RED_VAL,
+                  VGA_BLUE_O => VGA_BLUE_VAL,
+                  VGA_GREEN_O => VGA_GREEN_VAL,
                   nreset => nreset,
-                  led => ledValues,
                   clk100Mhz => clk100Mhz);
     
     clk_process : process
@@ -68,20 +71,6 @@ begin
   -- Stimulus process
   stim_proc : process
   begin
-  
-    --RGB_Val <= "000000000000";
-
-    -- hold reset state for 42 ns (be careful the reset is low active) and wait
-    -- after the reset is inactive
-    nreset <= '0';
-    wait for 42 ns;
-    nreset <= '1';
-    wait for 42 ns;
-
-    -- Simulate for 2 sec
-    wait for 2000 ms;
-
-    -- Wait forever (terminate simulation)
     wait;
 
   end process;

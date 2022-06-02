@@ -30,7 +30,8 @@ Port (  HSync       : out STD_LOGIC := '1';         -- Ausgang fr das H-Sync Sig
         Clock_VGA   : in STD_LOGIC;                 -- Takteingang fr Sync-Logic (z.B. 25.175MHz)                     
         n_reset      : in STD_LOGIC;                 -- Reset fr Sync-Logik                   
         x_out       : out UNSIGNED(9 downto 0);     -- Counter fr die sichtbaren Pixel in x-Richtung              
-        y_out       : out UNSIGNED(9 downto 0)      -- Counter fr die sichtbaren Pixel in y-Richtung
+        y_out       : out UNSIGNED(9 downto 0);     -- Counter fr die sichtbaren Pixel in y-Richtung
+        active      : out STD_LOGIC
         );
 
 end vga_controller;
@@ -49,23 +50,18 @@ begin
     x_out <= to_unsigned(x, x_out'length);
     y_out <= to_unsigned(y, y_out'length);
     
-    process(Clock_VGA, n_reset)
+    process(Clock_VGA)
         begin
             if(rising_edge(Clock_VGA)) then
-                if(n_reset = '1') then
-                    HSync <= '1';
-                    VSync <= '1';
-                    Pixel_Counter <= 0;
-                    Line_Counter <= 0;
-            else
                 Pixel_Counter <= Pixel_Counter + 1;
+                
                 if(Pixel_Counter = 799) then
                     Pixel_Counter <= 0;
                     Line_Counter <= Line_Counter + 1;
                 end if;   
                 if(Line_Counter = 525) then
                     Line_Counter <= 0; 
-                 end if;        
+                end if;        
                 if(Pixel_Counter = 703) then
                     HSync <= '0';
                 end if; 
@@ -77,12 +73,17 @@ begin
                 end if;
                 if(Line_Counter = 525) then 
                     VSync <= '1'; 
-                end if;                
+                end if;
+                
+                if((Pixel_Counter > 47) and (Pixel_Counter < 688) and
+                    (Line_Counter > 32) and (Line_Counter < 513)) then
+                        active <= '1';
+                else active <= '0';
+                end if;
             end if;
-        end if;
     end process;
 
-    process(Clock_VGA, n_reset)
+    process(Clock_VGA)
     begin
         if(rising_edge(Clock_VGA)) then
             if((Pixel_Counter > 47) and (Pixel_Counter < 688)) then    
@@ -93,7 +94,7 @@ begin
         end if;        
     end process;
     
-    process(Clock_VGA, n_reset)
+    process(Clock_VGA)
     begin
         if rising_edge(Clock_VGA) then
             if(Pixel_Counter = 799) then
