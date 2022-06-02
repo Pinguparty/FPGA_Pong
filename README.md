@@ -15,6 +15,10 @@ a) VGA :
 
 b ) Gamelogic (Pong) :
 - https://www.nandland.com/goboard/pong-game-in-fpga-with-go-board-vga.html
+- http://www.secs.oakland.edu/~llamocca/Courses/W19_ECE3710/FinalProject/Group4_PongGame.pdf
+- https://github.com/jonathandao0/VerilogPong
+- https://gist.github.com/jgibbard/467f367b733a79553e9a
+- 
 
 
 c) Camera :
