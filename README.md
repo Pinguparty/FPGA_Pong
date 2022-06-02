@@ -18,8 +18,6 @@ b ) Gamelogic (Pong) :
 - http://www.secs.oakland.edu/~llamocca/Courses/W19_ECE3710/FinalProject/Group4_PongGame.pdf
 - https://github.com/jonathandao0/VerilogPong
 - https://gist.github.com/jgibbard/467f367b733a79553e9a
-- 
-
 
 c) Camera :
 - https://www.fpga4student.com/2018/08/basys-3-fpga-ov7670-camera.html
