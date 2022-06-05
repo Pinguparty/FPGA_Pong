@@ -18,8 +18,9 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
+ "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/beispiel_controller.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/vga_controller.vhd"]"\
- "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/VGA_test.vhd"]"\
+ "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/Pong_Project.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/constrs_1/new/Board.xdc"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/constrs_1/new/Clock.xdc"]"\
@@ -29,6 +30,16 @@ proc checkRequiredFiles { origin_dir} {
   foreach ifile $files {
     if { ![file isfile $ifile] } {
       puts " Could not find local file $ifile "
+      set status false
+    }
+  }
+
+  set files [list \
+ "[file normalize "$origin_dir/../../fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/synth_1/Counter.dcp"]"\
+  ]
+  foreach ifile $files {
+    if { ![file isfile $ifile] } {
+      puts " Could not find remote file $ifile "
       set status false
     }
   }
@@ -167,8 +178,9 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 set obj [get_filesets sources_1]
 # Add local files from the original project (-no_copy_sources specified)
 set files [list \
+ [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/beispiel_controller.vhd" ]\
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/vga_controller.vhd" ]\
- [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/VGA_test.vhd" ]\
+ [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/Pong_Project.vhd" ]\
 ]
 set added_files [add_files -fileset sources_1 $files]
 
@@ -176,18 +188,22 @@ set added_files [add_files -fileset sources_1 $files]
 # None
 
 # Set 'sources_1' fileset file properties for local files
+set file "new/beispiel_controller.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
 set file "new/vga_controller.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
-set file "new/VGA_test.vhd"
+set file "new/Pong_Project.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "VGA_test" -objects $obj
+set_property -name "top" -value "Pong_Project" -objects $obj
 
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
@@ -267,6 +283,11 @@ set_property -name "xsim.simulate.runtime" -value "200ms" -objects $obj
 
 # Set 'utils_1' fileset object
 set obj [get_filesets utils_1]
+set files [list \
+ [file normalize "${origin_dir}/../../fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/synth_1/Counter.dcp"] \
+]
+add_files -norecurse -fileset $obj $files
+
 # Add local files from the original project (-no_copy_sources specified)
 set files [list \
  [file normalize "${origin_dir}/VGA_Controller.srcs/utils_1/imports/synth_1/Counter.dcp" ]\
@@ -274,7 +295,11 @@ set files [list \
 set added_files [add_files -fileset utils_1 $files]
 
 # Set 'utils_1' fileset file properties for remote files
-# None
+set file "$origin_dir/../../fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/synth_1/Counter.dcp"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets utils_1] [list "*$file"]]
+set_property -name "netlist_only" -value "0" -objects $file_obj
+
 
 # Set 'utils_1' fileset file properties for local files
 set file "synth_1/Counter.dcp"
@@ -311,6 +336,7 @@ if { $obj != "" } {
 
 }
 set obj [get_runs synth_1]
+set_property -name "needs_refresh" -value "1" -objects $obj
 set_property -name "part" -value "xc7a100tcsg324-1" -objects $obj
 set_property -name "incremental_checkpoint" -value "C:/Users/tblum/Documents/fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/synth_1/Counter.dcp" -objects $obj
 set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
@@ -536,6 +562,7 @@ set_property -name "options.warn_on_violation" -value "1" -objects $obj
 
 }
 set obj [get_runs impl_1]
+set_property -name "needs_refresh" -value "1" -objects $obj
 set_property -name "part" -value "xc7a100tcsg324-1" -objects $obj
 set_property -name "auto_rqs.directory" -value "C:/Users/tblum/Documents/fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/impl_1" -objects $obj
 set_property -name "auto_incremental_checkpoint.directory" -value "C:/Users/tblum/Documents/fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/impl_1" -objects $obj

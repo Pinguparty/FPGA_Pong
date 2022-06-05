@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:48:16 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Thu Jun  2 12:31:04 2022
+# Process ID: 24688
+# Current directory: C:/Users/tblum/Documents/FPGA_Pong/Pong/VGA_Controller.srcs/utils_1/imports/synth_1
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent23676 C:\Users\tblum\Documents\FPGA_Pong\Pong\VGA_Controller.srcs\utils_1\imports\synth_1\Counter.dcp
+# Log file: C:/Users/tblum/Documents/FPGA_Pong/Pong/VGA_Controller.srcs/utils_1/imports/synth_1/vivado.log
+# Journal file: C:/Users/tblum/Documents/FPGA_Pong/Pong/VGA_Controller.srcs/utils_1/imports/synth_1\vivado.jou
+# Running On: Tobi-Surface, OS: Windows, CPU Frequency: 1498 MHz, CPU Physical cores: 4, Host memory: 16745 MB
+#-----------------------------------------------------------
+start_guioopen_checkpoint C:/Users/tblum/Documents/FPGA_Pong/Pong/VGA_Controller.srcs/utils_1/imports/synth_1/Counter.dcp
