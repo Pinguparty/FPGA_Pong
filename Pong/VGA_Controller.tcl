@@ -568,7 +568,6 @@ set_property -name "options.warn_on_violation" -value "1" -objects $obj
 
 }
 set obj [get_runs impl_1]
-set_property -name "needs_refresh" -value "1" -objects $obj
 set_property -name "part" -value "xc7a100tcsg324-1" -objects $obj
 set_property -name "auto_rqs.directory" -value "C:/Users/tblum/Documents/fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/impl_1" -objects $obj
 set_property -name "auto_incremental_checkpoint.directory" -value "C:/Users/tblum/Documents/fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/impl_1" -objects $obj
