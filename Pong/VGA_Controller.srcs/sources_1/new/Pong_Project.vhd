@@ -29,12 +29,18 @@ ENTITY Pong_Project IS
         VGA_HS_O : OUT STD_LOGIC;
         VGA_VS_O : OUT STD_LOGIC;
         VGA_RED_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-        VGA_BLUE_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
         VGA_GREEN_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+        VGA_BLUE_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
         nreset : IN STD_LOGIC;
         clk100Mhz : IN STD_LOGIC;
-        sw1 : IN STD_LOGIC
+        sw1 : IN STD_LOGIC;
+        
+        BTNC : IN STD_LOGIC;
+        BTNU : IN STD_LOGIC;
+        BTNL : IN STD_LOGIC;
+        BTNR : IN STD_LOGIC;
+        BTND : IN STD_LOGIC
     );
 END Pong_Project;
 
@@ -46,9 +52,9 @@ ARCHITECTURE Behavioral OF Pong_Project IS
     SIGNAL y : unsigned(9 DOWNTO 0) := (OTHERS => '0');
     SIGNAL active : STD_LOGIC;
 
-    SIGNAL red_bsp : STD_LOGIC_VECTOR (3 DOWNTO 0);
-    SIGNAL blue_bsp : STD_LOGIC_VECTOR (3 DOWNTO 0);
-    SIGNAL green_bsp : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL red_pong : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL green_pong : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL blue_pong : STD_LOGIC_VECTOR (3 DOWNTO 0);
 
     COMPONENT clk_wiz_0
         PORT (
@@ -67,32 +73,38 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             VGA_HS_O : OUT STD_LOGIC;
             VGA_VS_O : OUT STD_LOGIC;
             VGA_RED_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-            VGA_BLUE_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
             VGA_GREEN_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+            VGA_BLUE_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
-            red_bsp : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-            blue_bsp : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-            green_bsp : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
+            red_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
+            green_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
+            blue_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
 
             Clock_VGA : IN STD_LOGIC;
             n_reset : IN STD_LOGIC
         );
     END COMPONENT vga_controller;
 
-    COMPONENT beispiel_controller IS
+    COMPONENT pong_controller IS
         PORT (
-            red_bsp : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-            green_bsp : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-            blue_bsp : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+            red_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+            green_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+            blue_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
             x : IN UNSIGNED(9 DOWNTO 0);
             y : IN UNSIGNED(9 DOWNTO 0);
 
             nreset : IN STD_LOGIC;
             clock : IN STD_LOGIC;
-            sw1 : IN STD_LOGIC
+            sw1 : IN STD_LOGIC;
+            
+            BTNC : IN STD_LOGIC;
+            BTNU : IN STD_LOGIC;
+            BTNL : IN STD_LOGIC;
+            BTNR : IN STD_LOGIC;
+            BTND : IN STD_LOGIC
         );
-    END COMPONENT beispiel_controller;
+    END COMPONENT pong_controller;
     BEGIN
 
         Clock_25MHz : clk_wiz_0 PORT MAP(
@@ -108,28 +120,34 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             VGA_HS_O => VGA_HS_O,
             VGA_VS_O => VGA_VS_O,
             VGA_RED_O => VGA_RED_O,
-            VGA_BLUE_O => VGA_BLUE_O,
             VGA_GREEN_O => VGA_GREEN_O,
+            VGA_BLUE_O => VGA_BLUE_O,
 
-            red_bsp => red_bsp,
-            blue_bsp => blue_bsp,
-            green_bsp => green_bsp,
+            red_pong => red_pong,
+            green_pong => green_pong,
+            blue_pong => blue_pong,
 
             Clock_VGA => clk25Mhz,
             n_reset => nreset
         );
 
-        beispiel_cntr : beispiel_controller PORT MAP(
-            red_bsp => red_bsp,
-            green_bsp => blue_bsp,
-            blue_bsp => green_bsp,
+        pong_ctrl : pong_controller PORT MAP(
+            red_pong => red_pong,
+            green_pong => green_pong,
+            blue_pong => blue_pong,
 
             x => x,
             y => y,
 
             nreset => nreset,
             clock => clk25Mhz,
-            sw1 => sw1
+            sw1 => sw1,
+            
+            BTNC => BTNC,
+            BTNU => BTNU,
+            BTNL => BTNL,
+            BTNR => BTNR,
+            BTND => BTND
         );
 
     END Behavioral;

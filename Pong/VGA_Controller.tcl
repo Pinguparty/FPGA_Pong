@@ -18,9 +18,10 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
- "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/beispiel_controller.vhd"]"\
+ "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/pong_controller.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/vga_controller.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/Pong_Project.vhd"]"\
+ "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/beispiel_controller.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/constrs_1/new/Board.xdc"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/constrs_1/new/Clock.xdc"]"\
@@ -166,7 +167,7 @@ set_property -name "webtalk.questa_export_sim" -value "5" -objects $obj
 set_property -name "webtalk.riviera_export_sim" -value "5" -objects $obj
 set_property -name "webtalk.vcs_export_sim" -value "5" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "24" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "26" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
@@ -178,9 +179,10 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 set obj [get_filesets sources_1]
 # Add local files from the original project (-no_copy_sources specified)
 set files [list \
- [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/beispiel_controller.vhd" ]\
+ [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/pong_controller.vhd" ]\
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/vga_controller.vhd" ]\
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/Pong_Project.vhd" ]\
+ [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/beispiel_controller.vhd" ]\
 ]
 set added_files [add_files -fileset sources_1 $files]
 
@@ -188,7 +190,7 @@ set added_files [add_files -fileset sources_1 $files]
 # None
 
 # Set 'sources_1' fileset file properties for local files
-set file "new/beispiel_controller.vhd"
+set file "new/pong_controller.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
@@ -197,6 +199,10 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "new/Pong_Project.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "new/beispiel_controller.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
@@ -336,7 +342,6 @@ if { $obj != "" } {
 
 }
 set obj [get_runs synth_1]
-set_property -name "needs_refresh" -value "1" -objects $obj
 set_property -name "part" -value "xc7a100tcsg324-1" -objects $obj
 set_property -name "incremental_checkpoint" -value "C:/Users/tblum/Documents/fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/synth_1/Counter.dcp" -objects $obj
 set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
@@ -562,7 +567,6 @@ set_property -name "options.warn_on_violation" -value "1" -objects $obj
 
 }
 set obj [get_runs impl_1]
-set_property -name "needs_refresh" -value "1" -objects $obj
 set_property -name "part" -value "xc7a100tcsg324-1" -objects $obj
 set_property -name "auto_rqs.directory" -value "C:/Users/tblum/Documents/fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/impl_1" -objects $obj
 set_property -name "auto_incremental_checkpoint.directory" -value "C:/Users/tblum/Documents/fpgaProjekt/VGA_Controller/VGA_Controller/VGA_Controller.srcs/utils_1/imports/impl_1" -objects $obj

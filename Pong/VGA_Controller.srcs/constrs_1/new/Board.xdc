@@ -11,7 +11,11 @@ set_property IOSTANDARD LVCMOS33 [get_ports nreset]
 set_property PACKAGE_PIN U9 [get_ports {sw1}]					
 set_property IOSTANDARD LVCMOS33 [get_ports {sw1}]
 
-
+set_property -dict { PACKAGE_PIN E16   IOSTANDARD LVCMOS33 } [get_ports { BTNC }]; #IO_L9P_T1_DQS_14 Sch=btnc
+set_property -dict { PACKAGE_PIN F15   IOSTANDARD LVCMOS33 } [get_ports { BTNU }]; #IO_L4N_T0_D05_14 Sch=btnu
+set_property -dict { PACKAGE_PIN T16   IOSTANDARD LVCMOS33 } [get_ports { BTNL }]; #IO_L12P_T1_MRCC_14 Sch=btnl
+set_property -dict { PACKAGE_PIN R10   IOSTANDARD LVCMOS33 } [get_ports { BTNR }]; #IO_L10N_T1_D15_14 Sch=btnr
+set_property -dict { PACKAGE_PIN V10   IOSTANDARD LVCMOS33 } [get_ports { BTND }]; #IO_L9N_T1_DQS_D13_14 Sch=btnd
 
 #set_property PACKAGE_PIN T8 [get_ports {leds[0]}]					
 #set_property IOSTANDARD LVCMOS33 [get_ports {leds[0]}]

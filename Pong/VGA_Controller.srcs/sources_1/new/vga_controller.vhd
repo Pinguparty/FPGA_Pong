@@ -28,12 +28,12 @@ ENTITY vga_controller IS
         VGA_HS_O : OUT STD_LOGIC;
         VGA_VS_O : OUT STD_LOGIC;
         VGA_RED_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-        VGA_BLUE_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
         VGA_GREEN_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+        VGA_BLUE_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
-        red_bsp : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-        blue_bsp : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-        green_bsp : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
+        red_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
+        green_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
+        blue_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
 
         Clock_VGA : IN STD_LOGIC;
         n_reset : IN STD_LOGIC
@@ -120,9 +120,9 @@ BEGIN
         IF rising_edge(Clock_VGA) THEN
             IF (active = '1') THEN
                 -- Auswahl des RGB Inputs hier treffen
-                VGA_RED_O <= red_bsp;
-                VGA_GREEN_O <= green_bsp;
-                VGA_BLUE_O <= blue_bsp;
+                VGA_RED_O <= red_pong;
+                VGA_GREEN_O <= green_pong;
+                VGA_BLUE_O <= blue_pong;
             ELSE
                 VGA_RED_O <= "0000";
                 VGA_GREEN_O <= "0000";
