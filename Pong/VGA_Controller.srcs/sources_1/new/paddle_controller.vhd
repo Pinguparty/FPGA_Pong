@@ -28,7 +28,8 @@ use pong.pong_package.all;
 
 entity paddle_controller is
 generic (
-    g_Player_Paddle_X : integer
+    g_Player_Paddle_X : integer;
+    g_Player_Paddle_Color : std_logic_vector(11 downto 0)
 );
 port(
     i_Clk : in std_logic;
@@ -39,7 +40,7 @@ port(
     -- Player Paddle Control
     i_Paddle_Up : in std_logic;
     i_Paddle_Dn : in std_logic;
-
+   
     o_Draw_Paddle : out std_logic_vector(11 downto 0);
     o_Paddle_Y    : out integer
     );
@@ -57,8 +58,8 @@ begin
         int_counter <= int_counter + 1;
         -- initialise color output to background-color
         o_Draw_Paddle <= c_Board_BG_Color;
-        IF (((i_x > c_Paddle_Wall_Dist) AND (i_y > paddle_Y) AND (i_x < c_Paddle_Wall_Dist + c_Paddle_Width) AND (i_y < paddle_Y + c_Paddle_Height))) THEN
-            o_Draw_Paddle <= c_Paddle_P1_Color;
+        IF (((i_x > g_Player_Paddle_X) AND (i_y > paddle_Y) AND (i_x < g_Player_Paddle_X + c_Paddle_Width) AND (i_y < paddle_Y + c_Paddle_Height))) THEN
+            o_Draw_Paddle <= g_Player_Paddle_Color;
         END IF;
     
         IF (int_counter = c_Game_Speed AND i_Paddle_Up = '0' AND i_Paddle_Dn = '0') THEN

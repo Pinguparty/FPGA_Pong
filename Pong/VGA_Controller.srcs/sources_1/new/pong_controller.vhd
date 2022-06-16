@@ -62,6 +62,9 @@ ARCHITECTURE Behavioral OF pong_controller IS
     SIGNAL ball_y : INTEGER RANGE 0 TO 480 := 480/2;
     SIGNAL ball_dx : INTEGER := 1;
     SIGNAL ball_dy : INTEGER := 1;
+    
+    SIGNAL color_P1 : STD_LOGIC_VECTOR (11 DOWNTO 0);
+    SIGNAL color_P2 : STD_LOGIC_VECTOR (11 DOWNTO 0);
 
     SIGNAL counter : STD_LOGIC_VECTOR (22 DOWNTO 0);
     SIGNAL counter_n : STD_LOGIC_VECTOR (22 DOWNTO 0);
@@ -70,7 +73,8 @@ ARCHITECTURE Behavioral OF pong_controller IS
     
     COMPONENT paddle_controller
         generic (
-            g_Player_Paddle_X : integer
+            g_Player_Paddle_X : integer;
+            g_Player_Paddle_Color : std_logic_vector(11 downto 0)
         );
         PORT(
             i_Clk : in std_logic;
@@ -83,33 +87,42 @@ ARCHITECTURE Behavioral OF pong_controller IS
             i_Paddle_Dn : in std_logic;
 
             o_Draw_Paddle : out std_logic_vector(11 downto 0);
+            
             o_Paddle_Y    : out integer
         );
     END COMPONENT paddle_controller;
     BEGIN
         Pong_Paddle_P1 : paddle_controller 
         GENERIC MAP(
-            g_Player_Paddle_X => c_Paddle_Wall_Dist
+            g_Player_Paddle_X => c_Paddle_P1_Location,
+            g_Player_Paddle_Color => c_Paddle_P1_Color
         )
         PORT MAP(
             i_Clk => clock,
             i_x => x,
             i_y => y,
             i_Paddle_Up => BTNL,
-            i_Paddle_Dn => BTND
+            i_Paddle_Dn => BTND,
+
+            o_Draw_Paddle => color_P1
         );
         Pong_Paddle_P2 : paddle_controller 
         GENERIC MAP(
-            g_Player_Paddle_X => ((c_Screen_Width - c_Paddle_Wall_Dist) - c_Paddle_Width)
+            g_Player_Paddle_X => c_Paddle_P2_Location,
+            g_Player_Paddle_Color => c_Paddle_P2_Color
         )
         PORT MAP(
             i_Clk => clock,
             i_x => x,
             i_y => y,
             i_Paddle_Up => BTNU,
-            i_Paddle_Dn => BTNR
+            i_Paddle_Dn => BTNR,
+            o_Draw_Paddle => color_P2
         );
     PROCESS (clock, nreset)
-    BEGIN
+    BEGIN        
+        red_pong <= color_P1(11 DOWNTO 8) or color_P2(11 DOWNTO 8);
+        green_pong <= color_P1(7 DOWNTO 4) or color_P2(7 DOWNTO 4);
+        blue_pong <= color_P1(3 DOWNTO 0) or color_P2(3 DOWNTO 0);
     END PROCESS;
 END Behavioral;

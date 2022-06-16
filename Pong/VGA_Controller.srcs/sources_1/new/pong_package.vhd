@@ -51,7 +51,7 @@ constant c_Paddle_Width : integer := 20;
 constant c_Paddle_Speed : integer := 1;
 constant c_Paddle_Wall_Dist : integer := 5;
 constant c_Paddle_P1_Location : integer := 0 + c_Paddle_Wall_Dist;
-constant c_Paddle_P2_Location : integer := c_Board_Width - c_Paddle_Wall_Dist;
+constant c_Paddle_P2_Location : integer := ((c_Board_Width - c_Paddle_Wall_Dist) - c_Paddle_Width);
 constant c_Paddle_P1_Color : std_logic_vector(11 downto 0) := "111100000000";
 constant c_Paddle_P2_Color : std_logic_vector(11 downto 0) := "000000001111";
 
