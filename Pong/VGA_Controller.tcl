@@ -113,7 +113,7 @@ if { $::argc > 0 } {
 }
 
 # Set the directory path for the original project from where this script was exported
-set orig_proj_dir "[file normalize "$origin_dir/vivado_project"]"
+set orig_proj_dir "[file normalize "$origin_dir"]"
 
 # Check for paths and files needed for project creation
 set validate_required 0
@@ -188,9 +188,9 @@ add_files -norecurse -fileset $obj $files
 
 # Add local files from the original project (-no_copy_sources specified)
 set files [list \
- [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/new/pong_package.vhd" ]\
- [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/new/paddle_controller.vhd" ]\
- [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/new/ball_controller.vhd" ]\
+ [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/pong_package.vhd" ]\
+ [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/paddle_controller.vhd" ]\
+ [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/ball_controller.vhd" ]\
 ]
 set added_files [add_files -fileset sources_1 $files]
 
