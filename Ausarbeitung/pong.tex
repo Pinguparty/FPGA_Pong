@@ -1,0 +1,141 @@
+\documentclass[a4paper, 11pt]{article}          
+
+
+\usepackage[top=2.5cm,bottom=2.5cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
+
+\usepackage{graphicx}                           
+\usepackage{xcolor}                             
+\definecolor{x}{RGB}{0,0,0} 
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, allcolors=x}
+\usepackage[default]{sourcesanspro}             
+\usepackage[T1]{fontenc}                        
+\usepackage{fancyhdr}                           
+
+\usepackage{lastpage}                           
+
+\pagestyle{myheadings}                         
+\pagestyle{fancy}                               
+\fancyhf{}                                      
+
+\setlength{\headheight}{30pt}                   
+\renewcommand{\headrulewidth}{0.5pt}            
+\renewcommand{\footrulewidth}{0.5pt}            
+
+\fancyhead[L]{\includegraphics[width=3cm]{hsrm.eps}} 
+\fancyhead[R]{Pong}             
+\fancyfoot[R]{\thepage/\pageref{LastPage}}      
+
+
+\begin{document}
+
+
+
+
+\title{Pong auf einem FPGA (Nexys 4) mit Unterstützung für Steuerung über ein Kameramodul (OV7670).}
+\author{name,name,name,name}
+\date{\today{}}
+
+\maketitle                                      
+\tableofcontents
+
+\newpage
+\section{Einleitung} Die folgende Ausarbeitung ist eine kleine Einführung in die Welt der FPGAS, von einer einfachen Farbausgabe auf einem Monitor bis hin zu einem Videospiel, das über eine Kamera gesteuert werden kann.   
+    
+
+\subsection{Ziele und Plan des Projekts}                             
+
+    Das Ziel dieses Projekts war der FPGA-Entwicklung zu verstehen und zu erforschen und gleichzeitig praktische Erfahrungen zu sammeln. Die obige Definition ist eher abstrakt, daher wurde eine Reihe von Ziele festgelegt. Im Folgenden sind die Ziele aufgelistet:
+    \begin{itemize}
+        \item FPGAs und VHDL verstehen
+        \item Anzeigen einer einzelnen Farbe auf einem VGA-Monitor
+        \item Entwicklung eines einfachen Spiels (Pong)
+        \item Das Spiel durch die Kamera steuern, um es weiter zu vertiefen
+    \end{itemize}
+
+\subsection{Field-Programmable Gate Arrays}
+
+    FPGAs sind moderne programmierbare logische Geräte die so konfiguriert werden können, dass sie jede logische Operation ausführen. Ein FPGA enthält typischerweise eine Matrix aus programmierbaren Elementen, auch bekannt als, Configurable Logic  Blocks (CLBs).  CLBs enthalten LookUp Tables (LUTs), die als Logik- oder Speicherelemente verwendet werden können.   Die Konfigurationsdaten werden im Speicher abgelegt.
+    
+\subsection{VHDL}
+
+    Die Abkürzung VHDL steht für Very High-Speed Integrated Circuit Hardware Description Language. VHDL ist eine Hardwarebeschreibungssprache, eine Sprache zur Beschreibung von digitalen elektronischer Systeme.
+    
+\section{VGA}
+
+    VGA ( Video Graphics Array) ist ein analoger Videostandard, der hauptsächlich in Personal Computern verwendet ist.
+
+\subsection{Wie funktioniert ein VGA?}   
+
+    Beim VGA handelt es sich um einen digitalen Übertragungsstandard für Bildsignale. Das Bild wird Zeilenweise übertragen und dabei hat jedes Pixel eine fest definierte Dauer. Die Farbinformationen eines Pixels liegen als analoge Spannungen an und werden bei jedem Pixel neu eingelesen. Sobald eine Zeile zu Ende ist, wird ein Horizontal-Synchronisationssignal ausgelöst, wodurch der Monitor die Zeile wechselt und wieder an den Anfang einer Zeile springt. Wenn alle Zeilen durchlaufen sind, löst der VGA-Controller ein Horizontal-Synchronisationssignal aus, wodurch der Monitor wieder an die Anfangsposition springt.
+    Der sichtbare Teil des Bildschirms hat eine Auflösung von 640 x 480 Pixel. Der Monitor hat auch Bereiche, die nicht sichtbar sind, aber für die Synchronisation benötigt sind. Mit diesen Teilen beträgt die Gesamtbreite des Bildschirms 800 Pixel, und die Gesamthöhe beträgt 524 Pixel. Im Folgenden findet sich eine kurze Beschreibung der einzelnen Teile des Bildschirms:
+    \begin{itemize}
+        \item \textbf{Active Video:} Das ist der sichtbare Teil des Bildschirms, die Videoausgabe ist aktiviert.
+        \item \textbf{Front Porch:} Der Data Output zum Monitor muss ausgeschaltet sein für eine bestimmte Zeitt, die als "Front Porch" bezeichnet wird, bevor der HSync-Pulse stadttfinden kann.
+        \item \textbf{Sync Pulse:} Signalisiert das Ende einer Zeile und den Beginn der nächsten Zeile
+        \item \textbf{Back Porch:} Das ist der Teil, der vor dem Start des Active Videos beginnt
+    \end{itemize}
+
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+    \hline
+     & Active video & Front Porch & Sync Pulse & Back Porch \\ 
+    \hline
+    Horizontal & 640 & 16 & 96 & 48 \\ 
+    \hline
+    Vertical & 480 & 11 & 2 & 31 \\ 
+    \hline
+\end{tabular}
+\end{center}
+
+\subsection{Verbindung zwischen FPGA und VGA}                          
+
+    Der VGA-Anschluss hat insgesamt 15 Pins, aber nur 5 Signale werden für den Gebrauch benötigt:
+    \begin{itemize}
+        \item \textbf{HSYNC} - horizontale Synchronisierung Signal. Dieses Signal gibt die horizontale Position des aktiven Pixels
+        \item \textbf{VSYNC} - vertikale Synchronisierung Signal. Diese Signal gibt di vertikale Position des aktiven Pixels
+        \item \textbf{RED} - roter Farbkanal
+        \item \textbf{GREEN} - grüner Farbkanal
+        \item \textbf{BLUE} - blauer Farbkanal
+    \end{itemize}
+    
+
+    \textbf{Code Implementation:}
+    \\
+    \\Für den VGA-Controller werden zwei Hauptelemente benötigt: ein 25MHz-Clock und Counters (für die vertikalen und horizontalen Pixelkoordinaten). Der horizontale und der vertikale Counter zählen bis 799 bzw. 525. Diese Counters werden im Takt des Clocks aktualisiert. Wenn der horizontale Counter zwischen 48 und 687 liegt und der vertikale Counter zwischen 33 und 512 liegt, ist das active Signal true, und somit die x-y-Pixelsignale auf dem Bildschirm angezeigt werden können
+
+\section{Pong }  
+    
+    Das Pong-Spiel besteht aus einem Ball, der auf dem Bildschirm hin und her springt und 2 Paddeln (die sich nur vertikal bewegen können) mit welchen die Spieler den Ball wieder aufspringen lasen können.
+    \\Der Ball muss sich auf dem Bildschirm bewegen und zurückspringen, wenn der Ball ein Objekt ( eine Grenze oder ein Paddel) berührt.
+    \\\textbf{Game Rules:}   \\-Es gibt zwei Paddles, die sich nach oben und unten bewegen
+                    \\-Die Paddles können nicht über die horizontalen Kanten des Bildschirms hinausgehen
+                    \\-Der Ball startet in der Mitte und bewegt sich in eine diagonale Richtung
+                    \\-Der Ball springt von den Paddles und den horizontalen Seiten des Bildschirms ab
+                    \\-Wenn der Ball eine vertikale Seite berührt. Es wird ein Punkt vergeben, der Ball wird zurückgesetzt
+\subsection{Paddle Logic:}
+    Diese Pong-Spiel ist ein Zwei-Personen-Spiel, daher werden zwei Paddles benötigt.   Abmessungen und Abbildungen sind für beide Paddles gleich, aber sie haben verschiedene Positionskoordinaten. Die Paddle Steuerung ist recht einfach - sie reagiert auf Benutzereingaben, indem sie die Koordinate jedes Paddles erhöht oder verringert. Wenn ein Paddel am oberen oder unteren Grenze steht, ist keine weitere Bewegung in diese Richtung erlaubt.
+
+\subsection{Ball Logic:}
+    Der Ball startet in der Mitte und bewegt sich in eine diagonale Richtung. Der Ball springt auf, wenn es ein Paddel oder eine horizontale Seite berührt und wenn es eine vertikale Seite berührt ein Punkt der Spieler, der gegenüber der berührten Seite steht, bekommt einen Punkt.
+    Der Ball hat 2 Richtungen, X und Y. X und Y können entweder negativ oder positiv sein. Der Ball hat nur 2 Objekte, die es berühren und von denen es abspringen kann: ein Paddel oder eine horizontale Kante. Wenn der Ball auf eine horizontale Kante trifft, bleibt die x-Richtung unverändert, aber die y-Richtung wird invertiert. Wenn der Ball an einem Paddel aufspringt, bleibt die y-Richtung gleich, aber die x-Richtung wird invertiert.
+    \\ ( + bilder mit richtungen)
+    
+\subsection{Score Logic:}
+\subsection{Game start \ end?}
+
+\section{Kamera}
+\subsection{Wie funktioniert ein Kamera?}
+\subsection{Verbindung zwischen Kamera und FPGA}
+\subsection{Testbild?}
+\subsection{Farberkennung}
+
+\section{Alle zusammen(VGA+PONG+KAMERA) ?}
+\subsection{VGA+PONG}
+\subsection{PONG+Kamera}
+
+\section{Fazit}
+
+
+\end{document}

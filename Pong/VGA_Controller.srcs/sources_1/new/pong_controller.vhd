@@ -30,6 +30,8 @@ ENTITY pong_controller IS
         PADDLE_WIDTH : INTEGER := 20;
         PADDLE_SPEED : INTEGER := 1;
         PADDLE_WALL_DIST : INTEGER := 5;
+
+        BALL_RADIUS : INTEGER := 10;
         GAME_SPEED : INTEGER := 100000 --Ticks between updates ==> lower is faster
     );
     PORT (
@@ -43,7 +45,7 @@ ENTITY pong_controller IS
         nreset : IN STD_LOGIC;
         clock : IN STD_LOGIC;
         sw1 : IN STD_LOGIC;
-        
+
         BTNC : IN STD_LOGIC;
         BTNU : IN STD_LOGIC;
         BTNL : IN STD_LOGIC;
@@ -53,8 +55,13 @@ ENTITY pong_controller IS
 END pong_controller;
 
 ARCHITECTURE Behavioral OF pong_controller IS
-    SIGNAL paddleL_y : INTEGER RANGE 0 TO 512 := ((480/2) - (PADDLE_HEIGHT / 2));
-    SIGNAL paddleR_y : INTEGER RANGE 0 TO 512 := ((480/2) - (PADDLE_HEIGHT / 2));
+    SIGNAL paddleL_y : INTEGER RANGE 0 TO 480 := ((480/2) - (PADDLE_HEIGHT / 2));
+    SIGNAL paddleR_y : INTEGER RANGE 0 TO 480 := ((480/2) - (PADDLE_HEIGHT / 2));
+
+    SIGNAL ball_x : INTEGER RANGE 0 TO 640 := 640/2;
+    SIGNAL ball_y : INTEGER RANGE 0 TO 480 := 480/2;
+    SIGNAL ball_dx : INTEGER := 1;
+    SIGNAL ball_dy : INTEGER := 1;
 
     SIGNAL counter : STD_LOGIC_VECTOR (22 DOWNTO 0);
     SIGNAL counter_n : STD_LOGIC_VECTOR (22 DOWNTO 0);
@@ -104,9 +111,5 @@ ARCHITECTURE Behavioral OF pong_controller IS
         );
     PROCESS (clock, nreset)
     BEGIN
-    
     END PROCESS;
-
-    -- Next-state logic
-    counter_n <= STD_LOGIC_VECTOR(unsigned(counter) + 1);
 END Behavioral;
