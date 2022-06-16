@@ -18,9 +18,9 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
- "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/new/pong_package.vhd"]"\
- "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/new/paddle_controller.vhd"]"\
- "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/new/ball_controller.vhd"]"\
+ "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/pong_package.vhd"]"\
+ "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/paddle_controller.vhd"]"\
+ "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/ball_controller.vhd"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
