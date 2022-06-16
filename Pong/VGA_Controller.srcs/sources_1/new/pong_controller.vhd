@@ -20,6 +20,10 @@
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
+
+library pong;
+use pong.pong_package.all;
+
 ENTITY pong_controller IS
     GENERIC (
         PADDLE_HEIGHT : INTEGER := 100;
@@ -56,49 +60,51 @@ ARCHITECTURE Behavioral OF pong_controller IS
     SIGNAL counter_n : STD_LOGIC_VECTOR (22 DOWNTO 0);
 
     SIGNAL int_counter : INTEGER := 0;
-BEGIN
+    
+    COMPONENT paddle_controller
+        generic (
+            g_Player_Paddle_X : integer
+        );
+        PORT(
+            i_Clk : in std_logic;
 
+            i_x : in unsigned(9 downto 0);
+            i_y : in unsigned(9 downto 0);
+
+            -- Player Paddle Control
+            i_Paddle_Up : in std_logic;
+            i_Paddle_Dn : in std_logic;
+
+            o_Draw_Paddle : out std_logic_vector(11 downto 0);
+            o_Paddle_Y    : out integer
+        );
+    END COMPONENT paddle_controller;
+    BEGIN
+        Pong_Paddle_P1 : paddle_controller 
+        GENERIC MAP(
+            g_Player_Paddle_X => c_Paddle_Wall_Dist
+        )
+        PORT MAP(
+            i_Clk => clock,
+            i_x => x,
+            i_y => y,
+            i_Paddle_Up => BTNL,
+            i_Paddle_Dn => BTND
+        );
+        Pong_Paddle_P2 : paddle_controller 
+        GENERIC MAP(
+            g_Player_Paddle_X => ((c_Screen_Width - c_Paddle_Wall_Dist) - c_Paddle_Width)
+        )
+        PORT MAP(
+            i_Clk => clock,
+            i_x => x,
+            i_y => y,
+            i_Paddle_Up => BTNU,
+            i_Paddle_Dn => BTNR
+        );
     PROCESS (clock, nreset)
     BEGIN
-        IF (rising_edge(clock)) THEN
-            int_counter <= int_counter + 1;
-
-            -- creating the paddles
-            red_pong <= "0000";
-            green_pong <= "0000";
-            blue_pong <= "0000";
-            IF (((x > PADDLE_WALL_DIST) AND (y > paddleL_y) AND (x < PADDLE_WALL_DIST + PADDLE_WIDTH) AND (y < paddleL_y + PADDLE_HEIGHT))) THEN
-                red_pong <= "1111";
-            END IF;
-            IF (((x > 640 - (PADDLE_WALL_DIST + PADDLE_WIDTH)) AND (y > paddleR_y) AND (x < 640 - PADDLE_WALL_DIST) AND (y < paddleR_y + PADDLE_HEIGHT))) THEN
-                blue_pong <= "1111";
-            END IF;
-
-            --IF (counter(22) = '1') THEN
-            --    paddleL_y <= paddleL_y + 1;
-            --END IF;
-
-            IF (int_counter = GAME_SPEED AND BTNL = '0' AND BTND = '0' AND BTNU = '0' AND BTNR = '0') THEN
-                int_counter <= 0;
-            END IF;
-            IF (int_counter = GAME_SPEED AND BTNL = '1') THEN
-                paddleL_y <= paddleL_y - 1;
-                int_counter <= 0;
-            END IF;
-            IF (int_counter = GAME_SPEED AND BTND = '1') THEN
-                paddleL_y <= paddleL_y + 1;
-                int_counter <= 0;
-            END IF;
-            IF (int_counter = GAME_SPEED AND BTNU = '1') THEN
-                paddleR_y <= paddleR_y - 1;
-                int_counter <= 0;
-            END IF;
-            IF (int_counter = GAME_SPEED AND BTNR = '1') THEN
-                paddleR_y <= paddleR_y + 1;
-                int_counter <= 0;
-            END IF;
-            counter <= counter_n;
-        END IF;
+    
     END PROCESS;
 
     -- Next-state logic
