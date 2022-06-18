@@ -65,33 +65,16 @@ ARCHITECTURE Behavioral OF pong_controller IS
     
     SIGNAL color_P1 : STD_LOGIC_VECTOR (11 DOWNTO 0);
     SIGNAL color_P2 : STD_LOGIC_VECTOR (11 DOWNTO 0);
+    SIGNAL color_Ball : STD_LOGIC_VECTOR (11 DOWNTO 0);
 
     SIGNAL counter : STD_LOGIC_VECTOR (22 DOWNTO 0);
     SIGNAL counter_n : STD_LOGIC_VECTOR (22 DOWNTO 0);
 
     SIGNAL int_counter : INTEGER := 0;
     
-    COMPONENT paddle_controller
-        generic (
-            g_Player_Paddle_X : integer;
-            g_Player_Paddle_Color : std_logic_vector(11 downto 0)
-        );
-        PORT(
-            i_Clk : in std_logic;
 
-            i_x : in unsigned(9 downto 0);
-            i_y : in unsigned(9 downto 0);
-
-            -- Player Paddle Control
-            i_Paddle_Up : in std_logic;
-            i_Paddle_Dn : in std_logic;
-
-            o_Draw_Paddle : out std_logic_vector(11 downto 0);
-            
-            o_Paddle_Y    : out integer
-        );
-    END COMPONENT paddle_controller;
-    BEGIN
+   
+   BEGIN
         Pong_Paddle_P1 : paddle_controller 
         GENERIC MAP(
             g_Player_Paddle_X => c_Paddle_P1_Location,
@@ -103,8 +86,9 @@ ARCHITECTURE Behavioral OF pong_controller IS
             i_y => y,
             i_Paddle_Up => BTNL,
             i_Paddle_Dn => BTND,
-
-            o_Draw_Paddle => color_P1
+    
+            o_Draw_Paddle => color_P1,
+            o_Paddle_Y => paddleL_Y
         );
         Pong_Paddle_P2 : paddle_controller 
         GENERIC MAP(
@@ -117,12 +101,29 @@ ARCHITECTURE Behavioral OF pong_controller IS
             i_y => y,
             i_Paddle_Up => BTNU,
             i_Paddle_Dn => BTNR,
-            o_Draw_Paddle => color_P2
+            o_Draw_Paddle => color_P2,
+            o_Paddle_Y => paddleR_Y
+        );
+        
+        Pong_Ball : ball_controller
+        GENERIC MAP (
+            g_Ball_Color => c_Ball_Color
+        )
+        PORT MAP (
+            i_Clk => clock,
+            i_x => x,
+            i_y => y,
+            i_Paddle_Left_Y => paddleL_y,
+            i_Paddle_Right_Y => paddleR_y,
+            i_Start_Button => BTNC,
+            o_Draw_Ball => color_Ball,
+            o_Ball_X => ball_x,
+            o_Ball_Y => ball_y
         );
     PROCESS (clock, nreset)
     BEGIN        
-        red_pong <= color_P1(11 DOWNTO 8) or color_P2(11 DOWNTO 8);
-        green_pong <= color_P1(7 DOWNTO 4) or color_P2(7 DOWNTO 4);
-        blue_pong <= color_P1(3 DOWNTO 0) or color_P2(3 DOWNTO 0);
+        red_pong <= color_P1(11 DOWNTO 8) or color_P2(11 DOWNTO 8) or color_Ball(11 DOWNTO 8);
+        green_pong <= color_P1(7 DOWNTO 4) or color_P2(7 DOWNTO 4) or color_Ball(7 DOWNTO 4);
+        blue_pong <= color_P1(3 DOWNTO 0) or color_P2(3 DOWNTO 0) or color_Ball(3 DOWNTO 0);
     END PROCESS;
 END Behavioral;

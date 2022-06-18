@@ -43,7 +43,7 @@ constant c_Board_Width : integer := 640;
 constant c_Board_BG_Color : std_logic_vector(11 downto 0) := "000000000000";
 constant c_Screen_Height : integer := 525;
 constant c_Screen_Width : integer := 800;
-constant c_Game_Speed : INTEGER := 100000; --Ticks between updates ==> lower is faster
+constant c_Game_Speed : INTEGER := 200000; --Ticks between updates ==> lower is faster
 
 -- Paddle
 constant c_Paddle_Height : integer := 100;
@@ -64,33 +64,61 @@ constant c_Ball_Color : std_logic_vector(11 downto 0) := "111111111111";
 ------------------
 component paddle_controller is
 generic (
-    g_Player_Paddle_X: integer -- defines X-Location for the 
+    -- the generics are used to differentiate the 2 Paddles ingame by position and color.
+
+    -- The X-Location of the Paddle (this value always refers to the left edge) gets set at instantiation.
+    g_Player_Paddle_X : integer;
+    -- The color of the Paddle. Gets set at instantiation.
+    g_Player_Paddle_Color : std_logic_vector(11 downto 0)
 );
-port (
-      i_Clk : in std_logic;
+port(
+    -- global clock
+    i_Clk : in std_logic;
 
-      i_Col_Count_Div : in std_logic_vector(5 downto 0);
-      i_Row_Count_Div : in std_logic_vector(5 downto 0);
+    -- the pixel coordinates at every given clock-cycle.
+    i_x : in unsigned(9 downto 0);
+    i_y : in unsigned(9 downto 0);
 
-      -- Player Paddle Control
-      i_Paddle_Up : in std_logic;
-      i_Paddle_Dn : in std_logic;
+    -- inputs for the paddle-controls.
+    i_Paddle_Up : in std_logic;
+    i_Paddle_Dn : in std_logic;
+   
+   -- Outputs the color of the paddle (or the background-color) to the VGA-Controller, in order to draw the paddle.
+    o_Draw_Paddle : out std_logic_vector(11 downto 0);
+    -- Output of the Paddles Y-Position. Used by the ball_controller to handle collions.
+    o_Paddle_Y    : out integer
+    );
 
-      o_Draw_Paddle : out std_logic;
-      o_Paddle_Y    : out std_logic_vector(5 downto 0)
-      );
+
 end component paddle_controller;
-
 component ball_controller is
-port (
-    i_Clk           : in  std_logic;
-    i_Game_Active   : in  std_logic;
-    i_Col_Count_Div : in  std_logic_vector(5 downto 0);
-    i_Row_Count_Div : in  std_logic_vector(5 downto 0);
-    --
-    o_Draw_Ball     : out std_logic;
-    o_Ball_X        : out std_logic_vector(5 downto 0);
-    o_Ball_Y        : out std_logic_vector(5 downto 0)
+generic (
+    -- The color of the Paddle. Gets set at instantiation.
+    g_Ball_Color : std_logic_vector(11 downto 0)
 );
+port(
+    -- global clock.
+    i_Clk : in std_logic;
+
+    -- the pixel coordinates at every given clock-cycle.
+    i_x : in unsigned(9 downto 0);
+    i_y : in unsigned(9 downto 0);
+    
+    -- the Y-Position of the paddles 0-point (= the upper left corner of the paddle)
+    i_Paddle_Left_Y : in integer;
+    i_Paddle_Right_Y : in integer;
+    
+    -- Gets bound to a button on the board that is used to start the game-round.
+    i_Start_Button : in std_logic;
+   
+   -- Outputs the color of the ball or the background-color to the VGA-Controller, in order to draw the ball.
+    o_Draw_Ball : out std_logic_vector(11 downto 0);
+    
+    -- Ouputs X and Y Position of the Center of the ball, which could be useful in the future.
+    o_Ball_Y : out integer;
+    o_Ball_X : out integer
+    );
+
+
 end component ball_controller;
 end pong_package;
