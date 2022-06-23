@@ -18,6 +18,7 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
+ "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/new/gamescreen_controller.vhd"]"\
  "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/utils_1/imports/synth_1/Pong_Project.dcp"]"\
   ]
   foreach ifile $files {
@@ -190,6 +191,12 @@ set files [list \
 ]
 add_files -norecurse -fileset $obj $files
 
+# Add local files from the original project (-no_copy_sources specified)
+set files [list \
+ [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/new/gamescreen_controller.vhd" ]\
+]
+set added_files [add_files -fileset sources_1 $files]
+
 # Set 'sources_1' fileset file properties for remote files
 set file "$origin_dir/VGA_Controller.srcs/sources_1/new/pong_package.vhd"
 set file [file normalize $file]
@@ -229,7 +236,10 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files
-# None
+set file "new/gamescreen_controller.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
