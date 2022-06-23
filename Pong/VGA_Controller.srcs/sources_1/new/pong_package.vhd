@@ -1,4 +1,4 @@
-----------------------------------------------------------------------------------
+ ----------------------------------------------------------------------------------
 -- Company: 
 -- Engineer: 
 -- 
@@ -121,4 +121,23 @@ port(
 
 
 end component ball_controller;
+
+component gamescreen_controller is
+generic (
+            g_Point_Color : std_logic_vector(11 downto 0)
+            );
+port(       i_Clk : in std_logic;
+
+            o_draw_Point : out std_logic_vector(11 downto 0);
+    
+            i_x: in unsigned(9 downto 0);
+            i_y: in unsigned(9 downto 0);
+            
+            i_Ball_x: in integer;
+            
+            sw1 : in std_logic;
+            i_Resetgame : in std_logic
+                  
+            );      
+end component gamescreen_controller;
 end pong_package;
