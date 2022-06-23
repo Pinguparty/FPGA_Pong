@@ -28,6 +28,7 @@ Tutorials:
   - https://github.com/bwang40/OV7670_NEXYS4DDR_HDL
   - https://sceweb.sce.uhcl.edu/xiaokun/doc/Publication/2019/ISVLSI2019_YZhang.pdf
   - https://www.instructables.com/VHDL-OV7670-Camera-Controlregister-and-Pixel-Captu/
+  - http://www.dejazzer.com/eigenpi/digital_camera/digital_camera.html
 
 Other Tutorials :
 - Clock Tutorial https://learn.gadgetfactory.net/2017/02/22/fpga-clocking-clocking-wizard-in-xilinx-ise/
