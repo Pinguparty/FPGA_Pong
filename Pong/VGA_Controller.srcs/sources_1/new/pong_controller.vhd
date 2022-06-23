@@ -65,14 +65,16 @@ ARCHITECTURE Behavioral OF pong_controller IS
     
     SIGNAL color_P1 : STD_LOGIC_VECTOR (11 DOWNTO 0);
     SIGNAL color_P2 : STD_LOGIC_VECTOR (11 DOWNTO 0);
-    SIGNAL color_Ball : STD_LOGIC_VECTOR (11 DOWNTO 0);
+    SIGNAL color_Ball : STD_LOGIC_VECTOR (11 DOWNTO 0);    
+    SIGNAL color_Point: STD_LOGIC_VECTOR (11 DOWNTO 0);
+    
+    
 
     SIGNAL counter : STD_LOGIC_VECTOR (22 DOWNTO 0);
     SIGNAL counter_n : STD_LOGIC_VECTOR (22 DOWNTO 0);
 
     SIGNAL int_counter : INTEGER := 0;
     
-
    
    BEGIN
         Pong_Paddle_P1 : paddle_controller 
@@ -120,10 +122,24 @@ ARCHITECTURE Behavioral OF pong_controller IS
             o_Ball_X => ball_x,
             o_Ball_Y => ball_y
         );
+        
+        Pong_Score : gamescreen_controller
+        GENERIC MAP(
+           g_Point_Color => c_Paddle_P1_Color
+        )
+        PORT MAP(
+            i_Clk => clock,
+            o_draw_Point => color_Point,
+            i_x => x,
+            i_y => y,
+            i_Ball_x => ball_X,
+            sw1 => sw1,
+            i_Resetgame => BTNC
+        );
     PROCESS (clock, nreset)
     BEGIN        
-        red_pong <= color_P1(11 DOWNTO 8) or color_P2(11 DOWNTO 8) or color_Ball(11 DOWNTO 8);
-        green_pong <= color_P1(7 DOWNTO 4) or color_P2(7 DOWNTO 4) or color_Ball(7 DOWNTO 4);
-        blue_pong <= color_P1(3 DOWNTO 0) or color_P2(3 DOWNTO 0) or color_Ball(3 DOWNTO 0);
+        red_pong <= color_P1(11 DOWNTO 8) or color_P2(11 DOWNTO 8) or color_Ball(11 DOWNTO 8) or color_Point(11 DOWNTO 8);
+        green_pong <= color_P1(7 DOWNTO 4) or color_P2(7 DOWNTO 4) or color_Ball(7 DOWNTO 4) or color_Point(7 DOWNTO 4);
+        blue_pong <= color_P1(3 DOWNTO 0) or color_P2(3 DOWNTO 0) or color_Ball(3 DOWNTO 0) or color_Point (3 DOWNTO 0);
     END PROCESS;
 END Behavioral;
