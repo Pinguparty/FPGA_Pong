@@ -77,11 +77,7 @@ begin
                 --P2_lives <= "11";
                 --End if;
                 
-                -- if someone won and button is pressed, reset lives
-                IF ( i_Resetgame = '1' AND ( P1_lives = "11" OR P2_lives = "11" ) ) THEN
-                    P1_lives <= "00";
-                    P2_lives <= "00";  
-                END IF;   
+ 
  
  
 ----------------------------------------------------------------------------------------
@@ -155,14 +151,7 @@ begin
                 -- if the clock-counter reaches the game_speed threshold       
                 IF (clock_counter = c_Game_Speed) THEN
                 -- reset it to 0
-                    clock_counter <= 0;
-                 -- if ball hits left walll             
-                    IF (i_ball_x - 1 <= c_Ball_Radius + 1) THEN
-                        P1_lives <= P1_lives + 1;
-                -- if ball hits right wall        
-                    ELSIF (i_ball_x + 1 >= (c_Board_Width - (c_Ball_Radius + 1))) THEN
-                        P2_lives <= P2_lives + 1;    
-                    END IF;                  
+                    clock_counter <= 0;         
                 END IF;    
         end if;        
     end process;

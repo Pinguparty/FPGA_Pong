@@ -62,7 +62,7 @@ begin
         if(rising_edge(i_Clk)) then
             -- advance clock-counter.
             clock_counter <= clock_counter + 1;
-            
+ 
             ---------------------
             --- Draw the Ball ---
             ---------------------
@@ -79,6 +79,13 @@ begin
             ----------------
             -- If the Start_Button (defined at instantiation of ball_controller in pong_controller) is pressed...
             IF(i_Start_Button = '1' ) THEN
+                -- if someone won and button is pressed, reset lives
+                IF(p1_points = "11" OR p2_points = "11") then
+                    p1_points <= "00";
+                    p2_points <= "00";
+                    o_P1_Points <= "00";
+                    o_P2_Points <= "00";
+                END IF;
                 -- ..set the position of the ball to the center of the screen...
                 ball_x <= c_Board_Width /2;
                 ball_y <= c_Board_Height /2;
