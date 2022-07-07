@@ -30,8 +30,10 @@ proc checkRequiredFiles { origin_dir} {
   set files [list \
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/pong_package.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/ball_controller.vhd"]"\
+ "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/gamescreen_controller.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/paddle_controller.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/pong_controller.vhd"]"\
+ "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/seven_segment_controller.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/vga_controller.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/Pong_Project.vhd"]"\
  "[file normalize "$origin_dir/VGA_Controller.srcs/sources_1/new/beispiel_controller.vhd"]"\
@@ -182,8 +184,10 @@ set obj [get_filesets sources_1]
 set files [list \
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/pong_package.vhd"] \
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/ball_controller.vhd"] \
+ [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/gamescreen_controller.vhd"] \
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/paddle_controller.vhd"] \
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/pong_controller.vhd"] \
+ [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/seven_segment_controller.vhd"] \
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/vga_controller.vhd"] \
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/Pong_Project.vhd"] \
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/beispiel_controller.vhd"] \
@@ -202,12 +206,22 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
+set file "$origin_dir/VGA_Controller.srcs/sources_1/new/gamescreen_controller.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
 set file "$origin_dir/VGA_Controller.srcs/sources_1/new/paddle_controller.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/VGA_Controller.srcs/sources_1/new/pong_controller.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/VGA_Controller.srcs/sources_1/new/seven_segment_controller.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj

@@ -59,6 +59,8 @@ constant c_Paddle_P2_Color : std_logic_vector(11 downto 0) := "000000001111";
 constant c_Ball_Radius : integer := 10;
 constant c_Ball_Color : std_logic_vector(11 downto 0) := "111111111111";
 
+constant c_Point_Color : std_logic_vector(11 downto 0) := "000011110000";
+
 ------------------
 --- Components ---
 ------------------
@@ -116,9 +118,35 @@ port(
     
     -- Ouputs X and Y Position of the Center of the ball, which could be useful in the future.
     o_Ball_Y : out integer;
-    o_Ball_X : out integer
+    o_Ball_X : out integer;
+    
+    -- Outputs the Point Values for each Player.
+    o_P1_Points : out std_logic_vector(1 downto 0);
+    o_P2_Points : out std_logic_vector(1 downto 0)
     );
 
 
 end component ball_controller;
+COMPONENT gamescreen_controller IS
+    GENERIC (
+        g_Point_Color : std_logic_vector(11 DOWNTO 0)
+    );
+    PORT (
+        -- global clock 
+        i_Clk : in std_logic;
+        --output of the color of the lives
+        o_draw_Point : out std_logic_vector(11 downto 0);
+        -- the pixel coordinates at every given clock-cycle.
+        i_x: in unsigned(9 downto 0);
+        i_y: in unsigned(9 downto 0);
+        --X coordinate of the Ball
+        i_Ball_x : in INTEGER;
+        -- switch only for tests, will delete later
+        sw1 : IN STD_LOGIC;
+        -- Button to restart the game after someone loses
+        i_Resetgame : in std_logic;
+        i_P1_lives : in std_logic_vector(1 downto 0);
+        i_P2_lives : in std_logic_vector(1 downto 0)
+    );
+END COMPONENT gamescreen_controller;
 end pong_package;

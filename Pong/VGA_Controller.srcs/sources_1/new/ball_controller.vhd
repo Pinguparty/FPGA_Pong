@@ -30,7 +30,11 @@ port(
     
     -- Ouputs X and Y Position of the Center of the ball, which could be useful in the future.
     o_Ball_Y : out integer;
-    o_Ball_X : out integer
+    o_Ball_X : out integer;
+    
+    -- Outputs the Point Values for each Player.
+    o_P1_Points : out std_logic_vector(1 downto 0);
+    o_P2_Points : out std_logic_vector(1 downto 0)
     );
 
 
@@ -49,6 +53,9 @@ architecture Behavioral of ball_controller is
     -- e.g. if ball_dx == -1 --> the ball moves 1px left; ball_dx == 0 --> the ball doesnt move; ball_dx == 1 --> the ball moves 1px right.
     SIGNAL ball_dx : integer RANGE -1 TO 1 := 0;
     SIGNAL ball_dy : integer RANGE -1 TO 1 := 0;
+    
+    SIGNAL p1_points : std_logic_vector(1 DOWNTO 0) := "00";
+    SIGNAL p2_points : std_logic_vector(1 DOWNTO 0) := "00";
 begin
     PROCESS(i_Clk)
     begin
@@ -104,6 +111,9 @@ begin
                         -- let it stick to the wall by setting its speed to (0|0)
                         ball_dx <= 0;
                         ball_dy <= 0;
+                        -- Increment P1-Points by casting the std_logic_vector to an unsigned, incrementing it, and then casting it back to std_logic_vector.
+                        p2_points <= std_logic_vector(unsigned(p2_points) + 1);
+                        o_P2_Points <= std_logic_vector(unsigned(p2_points) + 1);
                     END IF;
                     -- advance the ball one pixel to the right.
                     ball_x <= ball_x +1;
@@ -122,6 +132,10 @@ begin
                         -- let it stick to the wall by setting its speed to (0|0)
                         ball_dx <= 0;
                         ball_dy <= 0;
+                        -- Increment P1-Points by casting the std_logic_vector to an unsigned, incrementing it, and then casting it back to std_logic_vector.
+
+                        p1_points <= std_logic_vector(unsigned(p1_points) + 1);
+                        o_P1_Points <= std_logic_vector(unsigned(p1_points) + 1);
                     END IF;
                     -- advance the ball one pixel to the left.
                     ball_x <= ball_x -1;

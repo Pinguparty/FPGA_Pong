@@ -31,6 +31,15 @@ ENTITY Pong_Project IS
         VGA_RED_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
         VGA_GREEN_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
         VGA_BLUE_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+        
+        CA : OUT STD_LOGIC;
+        CB : OUT STD_LOGIC;
+        CC : OUT STD_LOGIC;
+        CD : OUT STD_LOGIC;
+        CE : OUT STD_LOGIC;
+        CF : OUT STD_LOGIC;
+        CG : OUT STD_LOGIC;
+        AN : out STD_LOGIC_VECTOR (7 downto 0);-- 8 Anode signals
 
         nreset : IN STD_LOGIC;
         clk100Mhz : IN STD_LOGIC;
@@ -41,6 +50,8 @@ ENTITY Pong_Project IS
         BTNL : IN STD_LOGIC;
         BTNR : IN STD_LOGIC;
         BTND : IN STD_LOGIC
+        
+
     );
 END Pong_Project;
 
@@ -55,6 +66,11 @@ ARCHITECTURE Behavioral OF Pong_Project IS
     SIGNAL red_pong : STD_LOGIC_VECTOR (3 DOWNTO 0);
     SIGNAL green_pong : STD_LOGIC_VECTOR (3 DOWNTO 0);
     SIGNAL blue_pong : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    
+    SIGNAL P1_points : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    SIGNAL P2_points : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    
+    SIGNAL ball_x : integer;
 
     COMPONENT clk_wiz_0
         PORT (
@@ -90,6 +106,11 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             red_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
             green_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
             blue_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+            
+            o_P1_Points : OUT std_logic_vector(1 downto 0);
+            o_P2_Points : OUT std_logic_vector(1 downto 0);
+            
+            o_Ball_x : out integer;
 
             x : IN UNSIGNED(9 DOWNTO 0);
             y : IN UNSIGNED(9 DOWNTO 0);
@@ -105,6 +126,23 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             BTND : IN STD_LOGIC
         );
     END COMPONENT pong_controller;
+    COMPONENT seven_segment_controller IS
+        PORT (
+            i_Clk        : in  std_logic;
+            i_Binary_Num_P1 : in  std_logic_vector(1 downto 0);
+            i_Binary_Num_P2 : in  std_logic_vector(1 downto 0);
+    
+            o_Segment_A  : out std_logic;
+            o_Segment_B  : out std_logic;
+            o_Segment_C  : out std_logic;
+            o_Segment_D  : out std_logic;
+            o_Segment_E  : out std_logic;
+            o_Segment_F  : out std_logic;
+            o_Segment_G  : out std_logic;
+            
+            o_Anode_Activate : out STD_LOGIC_VECTOR (7 downto 0) -- 8 Anode signals
+        );
+    END COMPONENT seven_segment_controller;
     BEGIN
 
         Clock_25MHz : clk_wiz_0 PORT MAP(
@@ -135,6 +173,11 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             red_pong => red_pong,
             green_pong => green_pong,
             blue_pong => blue_pong,
+            
+            o_P1_Points => P1_points,
+            o_P2_Points => P2_points,
+            
+            o_Ball_x => ball_x,
 
             x => x,
             y => y,
@@ -149,5 +192,19 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             BTNR => BTNR,
             BTND => BTND
         );
-
+        
+        seven_segment_ctrl : seven_segment_controller
+        PORT MAP(
+            i_Clk => clk25Mhz,
+            i_Binary_Num_P1 => P1_points,
+            i_Binary_Num_P2 => P2_points,
+            o_Segment_A  => CA,
+            o_Segment_B  => CB,
+            o_Segment_C  => CC,
+            o_Segment_D  => CD,
+            o_Segment_E  => CE,
+            o_Segment_F  => CF,
+            o_Segment_G  => CG,
+            o_Anode_Activate => AN
+        );
     END Behavioral;
