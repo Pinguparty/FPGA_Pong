@@ -78,7 +78,7 @@ begin
             --- Controls ---
             ----------------
             -- If the Start_Button (defined at instantiation of ball_controller in pong_controller) is pressed...
-            IF(i_Start_Button = '1') THEN
+            IF(i_Start_Button = '1' ) THEN
                 -- ..set the position of the ball to the center of the screen...
                 ball_x <= c_Board_Width /2;
                 ball_y <= c_Board_Height /2;
@@ -86,12 +86,25 @@ begin
                 ball_dx <= 1;
                 ball_dy <= 1;
             END IF;
-            
+
             -- if the clock-counter reaches the game_speed threshold...
             IF (clock_counter = c_Game_Speed) THEN
                 -- ...reset it to 0...
                 clock_counter <= 0;
                 
+                --if the ball hits one of the walls it resets to the middle
+                 IF (ball_x - 1 <= c_Ball_Radius + 1) THEN                     
+                        ball_dx <= 0;
+                        ball_dy <= 0;
+                        ball_x <= c_Board_Width /2;
+                        ball_y <= c_Board_Height /2;
+                 END IF;
+                 IF (ball_x + 1 >= (c_Board_Width - (c_Ball_Radius + 1))) THEN
+                        ball_dx <= 0;
+                        ball_dy <= 0; 
+                        ball_x <= c_Board_Width /2;
+                        ball_y <= c_Board_Height /2;                
+                 END IF;
                 ----------------------------------------
                 --- Calculate X-Position of the Ball ---
                 ----------------------------------------
@@ -164,6 +177,7 @@ begin
                     ball_y <= ball_y -1;
                 END IF;
             END IF;
+        o_Ball_X <= ball_x;    
         END IF;
     END PROCESS;
 end Behavioral;

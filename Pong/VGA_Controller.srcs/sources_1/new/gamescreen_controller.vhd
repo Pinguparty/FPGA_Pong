@@ -60,6 +60,7 @@ architecture Behavioral of gamescreen_controller is
     SIGNAL P1_lives : std_logic_vector(1 downto 0) := i_P1_lives;
     SIGNAL P2_lives : std_logic_vector(1 downto 0) := i_P2_lives;
 
+
 begin
     process(i_Clk)
     begin
@@ -154,7 +155,14 @@ begin
                 -- if the clock-counter reaches the game_speed threshold       
                 IF (clock_counter = c_Game_Speed) THEN
                 -- reset it to 0
-                    clock_counter <= 0;         
+                    clock_counter <= 0;
+                 -- if ball hits left walll             
+                    IF (i_ball_x - 1 <= c_Ball_Radius + 1) THEN
+                        P1_lives <= P1_lives + 1;
+                -- if ball hits right wall        
+                    ELSIF (i_ball_x + 1 >= (c_Board_Width - (c_Ball_Radius + 1))) THEN
+                        P2_lives <= P2_lives + 1;    
+                    END IF;                  
                 END IF;    
         end if;        
     end process;

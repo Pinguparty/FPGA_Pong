@@ -71,15 +71,18 @@ ARCHITECTURE Behavioral OF pong_controller IS
     
     SIGNAL color_P1 : STD_LOGIC_VECTOR (11 DOWNTO 0);
     SIGNAL color_P2 : STD_LOGIC_VECTOR (11 DOWNTO 0);
+
     SIGNAL color_Ball : STD_LOGIC_VECTOR (11 DOWNTO 0);
     SIGNAL color_UI : STD_LOGIC_VECTOR (11 DOWNTO 0);
     
     SIGNAL p1_points : std_logic_vector(1 downto 0);
-    SIGNAL p2_points : std_logic_vector(1 downto 0);
+    SIGNAL p2_points : std_logic_vector(1 downto 0);   
+    
+    SIGNAL counter : STD_LOGIC_VECTOR (22 DOWNTO 0);
+    SIGNAL counter_n : STD_LOGIC_VECTOR (22 DOWNTO 0);
 
     SIGNAL int_counter : INTEGER := 0;
     
-
    
    BEGIN
         Pong_Paddle_P1 : paddle_controller 
