@@ -36,3 +36,16 @@ Other Tutorials :
 
 GIT : 
 - https://github.com/barbedo/vivado-git
+
+Datasheets etc:
+
+  a) Schematics
+  - Basys-3 https://digilent.com/reference/_media/reference/programmable-logic/basys-3/basys-3_sch.pdf
+  - Nexys 4 https://digilent.com/reference/_media/nexys:nexys4:nexys4_sch.pdf
+  - Nexys 4 DDR https://digilent.com/reference/_media/nexys4-ddr:nexys_4_ddr_sch.pdf
+  
+  b) other
+  - Nexys 4 DDR Constraints https://github.com/Digilent/digilent-xdc/blob/master/Nexys-4-DDR-Master.xdc
+  - Nexas 4 Constraints https://github.com/Digilent/digilent-xdc/blob/master/Nexys-4-Master.xdc
+  - Clocking Resources https://ece-research.unm.edu/pollard/classes/595/K7/ug472_7Series_Clocking.pdf
+  - Nexys 4 Reference Manual https://digilent.com/reference/programmable-logic/nexys-4/reference-manual
