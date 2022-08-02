@@ -18,6 +18,12 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
+ "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/ip/frame_buffer/frame_buffer.xci"]"\
+ "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/new/i2c_sender.vhd"]"\
+ "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/new/ov7670_capture.vhd"]"\
+ "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/new/ov7670_controller.vhd"]"\
+ "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/new/ov7670_registers.vhd"]"\
+ "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/sources_1/new/ov7670_signals.vhd"]"\
  "[file normalize "$origin_dir/vivado_project/VGA_Controller.srcs/utils_1/imports/synth_1/Pong_Project.dcp"]"\
   ]
   foreach ifile $files {
@@ -165,14 +171,14 @@ set_property -name "simulator.xsim_gcc_version" -value "6.2.0" -objects $obj
 set_property -name "simulator.xsim_version" -value "2022.1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "5" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "8" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "8" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "8" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "8" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "8" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "8" -objects $obj
 set_property -name "webtalk.xsim_launch_sim" -value "26" -objects $obj
-set_property -name "xpm_libraries" -value "XPM_CDC" -objects $obj
+set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -193,6 +199,17 @@ set files [list \
  [file normalize "${origin_dir}/VGA_Controller.srcs/sources_1/new/beispiel_controller.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
+
+# Add local files from the original project (-no_copy_sources specified)
+set files [list \
+ [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/ip/frame_buffer/frame_buffer.xci" ]\
+ [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/new/i2c_sender.vhd" ]\
+ [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/new/ov7670_capture.vhd" ]\
+ [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/new/ov7670_controller.vhd" ]\
+ [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/new/ov7670_registers.vhd" ]\
+ [file normalize "${origin_dir}/vivado_project/VGA_Controller.srcs/sources_1/new/ov7670_signals.vhd" ]\
+]
+set added_files [add_files -fileset sources_1 $files]
 
 # Set 'sources_1' fileset file properties for remote files
 set file "$origin_dir/VGA_Controller.srcs/sources_1/new/pong_package.vhd"
@@ -243,7 +260,34 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files
-# None
+set file "frame_buffer/frame_buffer.xci"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
+
+set file "new/i2c_sender.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "new/ov7670_capture.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "new/ov7670_controller.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "new/ov7670_registers.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "new/ov7670_signals.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
@@ -374,6 +418,7 @@ if { $obj != "" } {
 
 }
 set obj [get_runs synth_1]
+set_property -name "needs_refresh" -value "1" -objects $obj
 set_property -name "part" -value "xc7a100tcsg324-1" -objects $obj
 set_property -name "incremental_checkpoint" -value "$proj_dir/VGA_Controller.srcs/utils_1/imports/synth_1/Pong_Project.dcp" -objects $obj
 set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj

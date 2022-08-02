@@ -49,7 +49,20 @@ ENTITY Pong_Project IS
         BTNU : IN STD_LOGIC;
         BTNL : IN STD_LOGIC;
         BTNR : IN STD_LOGIC;
-        BTND : IN STD_LOGIC
+        BTND : IN STD_LOGIC;
+        
+        SW : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+        
+        
+        ov7670_pclk  : in  STD_LOGIC;
+        ov7670_xclk  : out STD_LOGIC;
+        ov7670_vsync : in  STD_LOGIC;
+        ov7670_href  : in  STD_LOGIC;
+        ov7670_data  : in  STD_LOGIC_vector(7 downto 0);
+        ov7670_sioc  : out STD_LOGIC;
+        ov7670_siod  : inout STD_LOGIC;
+        ov7670_pwdn  : out STD_LOGIC;
+        ov7670_reset : out STD_LOGIC
         
 
     );
@@ -61,14 +74,17 @@ ARCHITECTURE Behavioral OF Pong_Project IS
 
     SIGNAL x : unsigned(9 DOWNTO 0) := (OTHERS => '0');
     SIGNAL y : unsigned(9 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL active : STD_LOGIC;
+    SIGNAL active_vga : STD_LOGIC;
+    SIGNAL vsync_vga :STD_LOGIC;
 
-    SIGNAL red_pong : STD_LOGIC_VECTOR (3 DOWNTO 0);
-    SIGNAL green_pong : STD_LOGIC_VECTOR (3 DOWNTO 0);
-    SIGNAL blue_pong : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL rgb_pong : STD_LOGIC_VECTOR (11 DOWNTO 0);
+    SIGNAL rgb_ov7670 : STD_LOGIC_VECTOR (11 DOWNTO 0);
+    SIGNAL active_ov7670 : STD_LOGIC;
     
     SIGNAL P1_points : STD_LOGIC_VECTOR (1 DOWNTO 0);
     SIGNAL P2_points : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    
+    SIGNAL player_input : STD_LOGIC_VECTOR (1 DOWNTO 0);
     
     SIGNAL ball_x : integer;
 
@@ -92,9 +108,11 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             VGA_GREEN_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
             VGA_BLUE_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
-            red_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-            green_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-            blue_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
+            rgb_pong : IN STD_LOGIC_VECTOR (11 DOWNTO 0);
+            rgb_ov7670 : IN STD_LOGIC_VECTOR (11 DOWNTO 0);
+            active_ov7670_i : IN STD_LOGIC;
+            
+            active_o : OUT STD_LOGIC;
 
             Clock_VGA : IN STD_LOGIC;
             n_reset : IN STD_LOGIC
@@ -103,9 +121,7 @@ ARCHITECTURE Behavioral OF Pong_Project IS
 
     COMPONENT pong_controller IS
         PORT (
-            red_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-            green_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-            blue_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+            rgb_pong : OUT STD_LOGIC_VECTOR (11 DOWNTO 0);
             
             o_P1_Points : OUT std_logic_vector(1 downto 0);
             o_P2_Points : OUT std_logic_vector(1 downto 0);
@@ -118,6 +134,8 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             nreset : IN STD_LOGIC;
             clock : IN STD_LOGIC;
             sw1 : IN STD_LOGIC;
+            
+            player_input_i : IN STD_LOGIC_VECTOR(1 DOWNTO 0); 
             
             BTNC : IN STD_LOGIC;
             BTNU : IN STD_LOGIC;
@@ -143,8 +161,35 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             o_Anode_Activate : out STD_LOGIC_VECTOR (7 downto 0) -- 8 Anode signals
         );
     END COMPONENT seven_segment_controller;
+    COMPONENT ov7670_controller IS
+        PORT (
+            clk : in STD_LOGIC;
+        
+            pclk  : in  STD_LOGIC;
+            xclk  : out STD_LOGIC;
+            vsync_ov7670 : in  STD_LOGIC;
+            href  : in  STD_LOGIC;
+            data  : in  STD_LOGIC_vector(7 downto 0);
+            sioc  : out STD_LOGIC;
+            siod  : inout STD_LOGIC;
+            pwdn  : out STD_LOGIC;
+            reset : out STD_LOGIC;
+            
+            player_input_o : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+            
+            x : IN UNSIGNED(9 DOWNTO 0);
+            y : IN UNSIGNED(9 DOWNTO 0);
+            
+            vsync_vga : IN STD_LOGIC;
+            active_vga_i : IN STD_LOGIC;
+            
+            active_ov7670_o : OUT STD_LOGIC;
+            rgb_ov7670_o : out STD_LOGIC_VECTOR (11 DOWNTO 0)
+        );
+    END COMPONENT ov7670_controller;
     BEGIN
-
+        VGA_VS_O <= vsync_vga;
+        
         Clock_25MHz : clk_wiz_0 PORT MAP(
             clk_out1 => clk25Mhz,
             resetn => nreset,
@@ -156,23 +201,23 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             y_out => y,
 
             VGA_HS_O => VGA_HS_O,
-            VGA_VS_O => VGA_VS_O,
+            VGA_VS_O => vsync_vga,
             VGA_RED_O => VGA_RED_O,
             VGA_GREEN_O => VGA_GREEN_O,
             VGA_BLUE_O => VGA_BLUE_O,
 
-            red_pong => red_pong,
-            green_pong => green_pong,
-            blue_pong => blue_pong,
+            rgb_pong => rgb_pong,
+            rgb_ov7670 => rgb_ov7670, 
+            active_ov7670_i => active_ov7670,
+            
+            active_o => active_vga,
 
             Clock_VGA => clk25Mhz,
             n_reset => nreset
         );
 
         pong_ctrl : pong_controller PORT MAP(
-            red_pong => red_pong,
-            green_pong => green_pong,
-            blue_pong => blue_pong,
+            rgb_pong => rgb_pong,
             
             o_P1_Points => P1_points,
             o_P2_Points => P2_points,
@@ -185,6 +230,8 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             nreset => nreset,
             clock => clk25Mhz,
             sw1 => sw1,
+            
+            player_input_i => player_input,
             
             BTNC => BTNC,
             BTNU => BTNU,
@@ -206,5 +253,31 @@ ARCHITECTURE Behavioral OF Pong_Project IS
             o_Segment_F  => CF,
             o_Segment_G  => CG,
             o_Anode_Activate => AN
+        );
+        
+        ov7670_ctrl : ov7670_controller
+        PORT MAP(
+            clk => clk25Mhz,
+        
+            pclk => ov7670_pclk,
+            xclk => ov7670_xclk,
+            vsync_ov7670 => ov7670_vsync,
+            href => ov7670_href,
+            data => ov7670_data,
+            sioc => ov7670_sioc,
+            siod => ov7670_siod,
+            pwdn => ov7670_pwdn,
+            reset => ov7670_reset,
+            
+            player_input_o => player_input,
+            
+            x => x,
+            y => y,
+            
+            vsync_vga => vsync_vga,
+            active_vga_i => active_vga, 
+            
+            active_ov7670_o => active_ov7670,
+            rgb_ov7670_o => rgb_ov7670
         );
     END Behavioral;

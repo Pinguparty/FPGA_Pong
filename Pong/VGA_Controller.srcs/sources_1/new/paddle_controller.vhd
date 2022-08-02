@@ -61,12 +61,18 @@ architecture Behavioral of paddle_controller is
     SIGNAL clock_counter : INTEGER := 0;
     -- The Y-Position of the Paddle, is exactly the upper-left corner.
     SIGNAL paddle_Y : integer RANGE 0 TO c_Board_Height-c_Paddle_Height := (c_Board_Height /2 ) - (c_Paddle_Height / 2);
+    
+    SIGNAL input_delay_timer : integer := 0;
 begin
     PROCESS(i_Clk)
     begin
         if(rising_edge(i_Clk)) then
             -- advance clock counter
             clock_counter <= clock_counter + 1;
+            
+            if(input_delay_timer > 0) then
+                input_delay_timer <= input_delay_timer - 1;
+            end if;
             
             -----------------------
             --- Draw the Paddle ---
@@ -86,12 +92,16 @@ begin
                 ----------------
                 -- If Up-Button is pressed and the paddle is not already at the top..
                 -- BUGGY: aus irgendeinem Grund, kann man die maximale Top-Position auf keinen sensiblen Wert stellen, nur halb in der mitte vom screen geht...
-                IF (i_Paddle_Up = '1' AND paddle_Y > 0) THEN
+                IF ((i_Paddle_Up = '1' AND paddle_Y > 0) OR (input_delay_timer > 0 AND paddle_Y > 0)) THEN
                     -- ...move it one pixel up.
                     paddle_Y <= paddle_Y - 1;
+                    
+                    if i_Paddle_Up = '1' then
+                        input_delay_timer <= 50;
+                    end if;
                 END IF;
                 -- If Down-Button is pressed and the paddle is not already at the bottom..
-                IF (i_Paddle_Dn = '1' AND paddle_Y + c_Paddle_Height < c_Board_Height) THEN
+                IF (i_Paddle_Dn = '1' AND i_Paddle_Up = '0' AND input_delay_timer = 0 AND paddle_Y + c_Paddle_Height < c_Board_Height) THEN
                     -- .. move it one pixel down.
                     paddle_Y <= paddle_Y + 1;
                 END IF;

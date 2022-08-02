@@ -35,10 +35,8 @@ ENTITY pong_controller IS
         BALL_RADIUS : INTEGER := 10;
         GAME_SPEED : INTEGER := 100000 --Ticks between updates ==> lower is faster
     );
-    PORT (
-        red_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-        green_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-        blue_pong : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+    PORT (        
+        rgb_pong : OUT STD_LOGIC_VECTOR (11 DOWNTO 0);
         
         o_P1_Points : OUT std_logic_vector(1 downto 0);
         o_P2_Points : OUT  std_logic_vector(1 downto 0);
@@ -51,6 +49,8 @@ ENTITY pong_controller IS
         nreset : IN STD_LOGIC;
         clock : IN STD_LOGIC;
         sw1 : IN STD_LOGIC;
+        
+        player_input_i : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
 
         BTNC : IN STD_LOGIC;
         BTNU : IN STD_LOGIC;
@@ -76,7 +76,12 @@ ARCHITECTURE Behavioral OF pong_controller IS
     SIGNAL color_UI : STD_LOGIC_VECTOR (11 DOWNTO 0);
     
     SIGNAL p1_points : std_logic_vector(1 downto 0);
-    SIGNAL p2_points : std_logic_vector(1 downto 0);   
+    SIGNAL p2_points : std_logic_vector(1 downto 0);
+    
+    SIGNAL p1_input_up : std_logic;
+    SIGNAL p1_input_dn : std_logic;
+    SIGNAL p2_input_up : std_logic;
+    SIGNAL p2_input_dn : std_logic;   
     
     SIGNAL counter : STD_LOGIC_VECTOR (22 DOWNTO 0);
     SIGNAL counter_n : STD_LOGIC_VECTOR (22 DOWNTO 0);
@@ -85,6 +90,11 @@ ARCHITECTURE Behavioral OF pong_controller IS
     
    
    BEGIN
+        p1_input_up <= player_input_i(0) or BTNL;
+        p1_input_dn <= '1';
+        p2_input_up <= player_input_i(1) or BTNR;
+        p2_input_dn <= '1';
+        
         Pong_Paddle_P1 : paddle_controller 
         GENERIC MAP(
             g_Player_Paddle_X => c_Paddle_P1_Location,
@@ -94,8 +104,8 @@ ARCHITECTURE Behavioral OF pong_controller IS
             i_Clk => clock,
             i_x => x,
             i_y => y,
-            i_Paddle_Up => BTNL,
-            i_Paddle_Dn => BTND,
+            i_Paddle_Up => p1_input_up,
+            i_Paddle_Dn => p1_input_dn,
     
             o_Draw_Paddle => color_P1,
             o_Paddle_Y => paddleL_Y
@@ -109,8 +119,8 @@ ARCHITECTURE Behavioral OF pong_controller IS
             i_Clk => clock,
             i_x => x,
             i_y => y,
-            i_Paddle_Up => BTNU,
-            i_Paddle_Dn => BTNR,
+            i_Paddle_Up => p2_input_up,
+            i_Paddle_Dn => p2_input_dn,
             o_Draw_Paddle => color_P2,
             o_Paddle_Y => paddleR_Y
         );
@@ -156,9 +166,9 @@ ARCHITECTURE Behavioral OF pong_controller IS
         );
     PROCESS (clock, nreset)
     BEGIN        
-        red_pong <= color_P1(11 DOWNTO 8) or color_P2(11 DOWNTO 8) or color_Ball(11 DOWNTO 8) or color_UI(11 DOWNTO 8);
-        green_pong <= color_P1(7 DOWNTO 4) or color_P2(7 DOWNTO 4) or color_Ball(7 DOWNTO 4) or color_UI(7 DOWNTO 4);
-        blue_pong <= color_P1(3 DOWNTO 0) or color_P2(3 DOWNTO 0) or color_Ball(3 DOWNTO 0) or color_UI(3 DOWNTO 0);
+        rgb_pong(11 DOWNTO 8) <= color_P1(11 DOWNTO 8) or color_P2(11 DOWNTO 8) or color_Ball(11 DOWNTO 8) or color_UI(11 DOWNTO 8);
+        rgb_pong(7 DOWNTO 4) <= color_P1(7 DOWNTO 4) or color_P2(7 DOWNTO 4) or color_Ball(7 DOWNTO 4) or color_UI(7 DOWNTO 4);
+        rgb_pong(3 DOWNTO 0) <= color_P1(3 DOWNTO 0) or color_P2(3 DOWNTO 0) or color_Ball(3 DOWNTO 0) or color_UI(3 DOWNTO 0);
         o_P1_Points <= p1_points;
         o_P2_Points <= p2_points;
     END PROCESS;

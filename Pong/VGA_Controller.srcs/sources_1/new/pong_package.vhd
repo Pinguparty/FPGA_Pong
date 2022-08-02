@@ -61,6 +61,14 @@ constant c_Ball_Color : std_logic_vector(11 downto 0) := "111111111111";
 
 constant c_Point_Color : std_logic_vector(11 downto 0) := "000011110000";
 
+
+-- Camera
+constant c_camera_x : integer := (c_Board_Width / 2) - 100;
+constant c_camera_y : integer := c_Board_Height - 100;
+
+-- Camera Controls
+constant c_holding_time : integer := 2500000; -- default: 2500000 (~0.1 sec)
+
 ------------------
 --- Components ---
 ------------------

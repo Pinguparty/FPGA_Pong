@@ -30,10 +30,12 @@ ENTITY vga_controller IS
         VGA_RED_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
         VGA_GREEN_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
         VGA_BLUE_O : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-
-        red_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-        green_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-        blue_pong : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
+        
+        rgb_pong : IN STD_LOGIC_VECTOR (11 DOWNTO 0);
+        rgb_ov7670 : IN STD_LOGIC_VECTOR (11 DOWNTO 0);
+        active_ov7670_i : IN STD_LOGIC;
+        
+        active_o : OUT STD_LOGIC;
 
         Clock_VGA : IN STD_LOGIC;
         n_reset : IN STD_LOGIC
@@ -49,7 +51,7 @@ ARCHITECTURE Behavioral OF vga_controller IS
     SIGNAL active : STD_LOGIC;
 
 BEGIN
-
+    active_o <= active;
     x_out <= to_unsigned(x, x_out'length);
     y_out <= to_unsigned(y, y_out'length);
 
@@ -118,11 +120,16 @@ BEGIN
     PROCESS (Clock_VGA)
     BEGIN
         IF rising_edge(Clock_VGA) THEN
-            IF (active = '1') THEN
+            IF (active = '1' and active_ov7670_i = '1') THEN
                 -- Auswahl des RGB Inputs hier treffen
-                VGA_RED_O <= red_pong;
-                VGA_GREEN_O <= green_pong;
-                VGA_BLUE_O <= blue_pong;
+                VGA_RED_O <= rgb_ov7670(11 DOWNTO 8);
+                VGA_GREEN_O <= rgb_ov7670(7 DOWNTO 4);
+                VGA_BLUE_O <= rgb_ov7670(3 DOWNTO 0);
+                
+            ELSIF (active = '1' and active_ov7670_i = '0') THEN
+                VGA_RED_O <= rgb_pong(11 DOWNTO 8);
+                VGA_GREEN_O <= rgb_pong(7 DOWNTO 4);
+                VGA_BLUE_O <= rgb_pong(3 DOWNTO 0);
             ELSE
                 VGA_RED_O <= "0000";
                 VGA_GREEN_O <= "0000";
